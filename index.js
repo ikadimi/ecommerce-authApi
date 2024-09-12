@@ -62,20 +62,20 @@ const User = mongoose.model('User', userSchema);
 app.use(express.json());
 
 // Middleware for JWT validation
-const verifyToken = (req, res, next) => {
-  const token = req.cookies.jwt_token
-  if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
+// const verifyToken = (req, res, next) => {
+//   const token = req.cookies.jwt_token
+//   if (!token) {
+//     return res.status(401).json({ message: 'Unauthorized' });
+//   }
 
-  jwt.verify(token, 'secret', (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-    req.user = decoded;
-    next();
-  });
-};
+//   jwt.verify(token, 'secret', (err, decoded) => {
+//     if (err) {
+//       return res.status(401).json({ message: 'Unauthorized' });
+//     }
+//     req.user = decoded;
+//     next();
+//   });
+// };
 
 // Route to register a new user
 app.post('/register', async (req, res) => {
@@ -120,7 +120,7 @@ app.post('/login', async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ email: user.email }, 'secret');
+    const token = jwt.sign({ userId: user._id }, 'secret');
     res.cookie('jwt_token', token, {
       httpOnly: true,
       secure: true,
