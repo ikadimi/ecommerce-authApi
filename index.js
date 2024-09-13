@@ -121,12 +121,12 @@ app.post('/login', async (req, res) => {
 
     // Generate JWT token
     const token = jwt.sign({ userId: user._id }, 'secret');
-    res.cookie('jwt_token', token, {
+    res.cookie('jwt', token, {
       httpOnly: true,
       secure: true,
       sameSite: 'none'
     });
-    res.status(200).json({ token });
+    res.status(200).json({ message: 'Login successful' });
   } catch (error) {
     res.status(500).json({ message: error._message || 'Internal server error' });
   }
