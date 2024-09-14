@@ -132,24 +132,15 @@ app.post('/login', async (req, res) => {
   }
 });
 
-// Protected route to get user details
-// app.get('/api/user', verifyToken, async (req, res) => {
-//   try {
-//     // Fetch user details using decoded token
-//     const user = await User.findOne({ email: req.user.email });
-//     if (!user) {
-//       return res.status(404).json({ error: 'User not found' });
-//     }
-//     res.status(200).json({ username: user.username, email: user.email });
-//   } catch (error) {
-//     res.status(500).json({ error: 'Internal server error' });
-//   }
-// });
-
-// Default route
-// app.get('/', (req, res) => {
-//   res.send('Welcome to my User Registration and Login API!');
-// });
+app.post('/logout', (req, res) => {
+  res.cookie('jwt', '', { 
+    httpOnly: true, 
+    secure: true,  // if using https
+    sameSite: 'Strict', 
+    expires: new Date(0)  // Setting cookie expiration to a past date
+  });
+  res.status(200).json({ message: 'Logged out successfully' });
+});
 
 // Start the server
 app.listen(PORT, () => {
