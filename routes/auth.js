@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const secret = 'secret';
 const User = require('../models/user.model'); // Adjust path as necessary
-
+const createResponse = require('../models/response.model');
 
 function authenticateToken(req, res, next) {
     const token = req.cookies.jwt; // Read token from cookies
@@ -25,7 +25,6 @@ router.get('/me', authenticateToken, (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
-        console.log(req.body)
         const { email, password } = req.body;
 
         // Find user by email
@@ -44,10 +43,9 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign({ userId: user._id, username: user.username }, secret);
         res.cookie('jwt', token, { httpOnly: true });
 
-        res.status(200).json({ message: 'Login successful' });
+        res.status(200).json(createResponse(true, 'Login successful'));
     } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ message: 'Error logging in' });
+        res.status(500).json({ message: error.message });
     }
 });
 
@@ -59,17 +57,17 @@ router.post('/register', async (req, res) => {
         const user = new User({ username, email, password });
         await user.save();
 
-        res.status(201).json({ message: 'User registered successfully' });
+        res.status(201).json(createResponse(true, 'Registration successful'));
     } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).json({ message: 'Error registering user' });
+        console.error('Registration error:', {...error});
+        res.status(500).json({ message: error.message });
     }
 });
 
 router.post('/logout', (req, res) => {
     res.cookie('jwt', '', { 
         httpOnly: true,
-        expiryDate: new Date(0)
+        expires: new Date(0),
      });
     res.json({ message: 'Logout successful' });
 });
