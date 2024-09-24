@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -20,8 +21,8 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Connect to MongoDB
-const url = 'mongodb://localhost:27017';
-const dbName = 'ecommerce';
+const url = process.env.DB_URL;
+const dbName = process.env.DB_NAME;
 mongoose.connect(`${url}/${dbName}`)
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('MongoDB connection error:', err));
@@ -30,5 +31,5 @@ mongoose.connect(`${url}/${dbName}`)
 app.use('/', authRoutes);
 
 // Start server
-const PORT = 3001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
